@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Scope } from '@nestjs/common';
 import {
   AddProductToBasketResponse,
   GetTotalPriceResponse,
@@ -8,7 +8,9 @@ import {
 import { ShopService } from 'src/shop/shop.service';
 import { AddProductDto } from './dto/add-product.dto';
 
-@Injectable()
+@Injectable({
+  scope: Scope.REQUEST,
+})
 export class BasketService {
   private items: AddProductDto[] = [];
 
