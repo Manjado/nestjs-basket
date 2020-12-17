@@ -12,7 +12,7 @@ import { ShopService } from './shop.service';
 
 @Controller({
   path: 'shop',
-  scope: Scope.REQUEST,
+  host: ':name.lvh.me',
 })
 export class ShopController {
   onApplicationBootstrap() {
