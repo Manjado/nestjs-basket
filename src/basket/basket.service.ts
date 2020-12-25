@@ -17,7 +17,7 @@ export class BasketService {
   ) {}
 
   add(item: AddProductDto): AddProductToBasketResponse {
-    const { name, count } = item;
+    const { name, count, id } = item;
     if (
       typeof name !== 'string' ||
       typeof count !== 'number' ||
@@ -30,6 +30,9 @@ export class BasketService {
       };
     }
     this.items.push(item);
+
+    // method for statistics purposes, you don't have to wait
+    this.shopService.addBoughtCounter(id);
 
     return {
       isSuccess: true,
@@ -53,22 +56,26 @@ export class BasketService {
     return this.items;
   }
 
-  getTotalPrice(): GetTotalPriceResponse {
+  async getTotalPrice(): Promise<GetTotalPriceResponse> {
     if (!this.items.every((item) => this.shopService.hasProduct(item.name))) {
       const alternativeBasket = this.items.filter((item) =>
         this.shopService.hasProduct(item.name),
       );
       return { isSuccess: false, alternativeBasket };
     }
-    return this.items
-      .map(
-        (item) =>
-          this.shopService.getPriceOfProduct(item.name) * item.count * 1.23,
+    return (
+      await Promise.all(
+        this.items.map(
+          async (item) =>
+            (await this.shopService.getPriceOfProduct(item.name)) *
+            item.count *
+            1.23,
+        ),
       )
-      .reduce((prev, curr) => prev + curr, 0);
+    ).reduce((prev, curr) => prev + curr, 0);
   }
 
-  countPromo(): number {
-    return this.getTotalPrice() > 10 ? 1 : 0;
+  async countPromo(): Promise<number> {
+    return (await this.getTotalPrice()) > 10 ? 1 : 0;
   }
 }

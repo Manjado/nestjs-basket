@@ -37,7 +37,7 @@ export class BasketController {
   }
 
   @Get('/total-price')
-  getTotalPrice(): GetTotalPriceResponse {
+  getTotalPrice(): Promise<GetTotalPriceResponse> {
     return this.basketService.getTotalPrice();
   }
 }
