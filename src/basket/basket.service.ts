@@ -5,7 +5,7 @@ import {
   ListProductsInBasketResponse,
   RemoveProductFromBasketResonse,
 } from 'src/interfaces/basket';
-import { ShopService } from 'src/shop/shop.service';
+import { ShopService } from '../shop/shop.service';
 import { AddProductDto } from './dto/add-product.dto';
 
 @Injectable()
