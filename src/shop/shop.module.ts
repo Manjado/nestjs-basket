@@ -7,7 +7,8 @@ import { ShopService } from './shop.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ShopItem]),
+    //TypeOrmModule.forFeature([ShopItem]), in active record
+    //we don't need to use TypeOrmModule.forFeature
     forwardRef(() => BasketModule),
   ],
   controllers: [ShopController],

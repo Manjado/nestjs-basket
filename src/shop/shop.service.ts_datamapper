@@ -12,11 +12,13 @@ import { ShopItem } from './shop-item.entity';
 export class ShopService {
   constructor(
     @Inject(forwardRef(() => BasketService))
-    private basketService: BasketService, // @InjectRepository(ShopItem) // private shopItemRepository: Repository<ShopItem>,  active record dont need to use Repository
+    private basketService: BasketService,
+    @InjectRepository(ShopItem)
+    private shopItemRepository: Repository<ShopItem>,
   ) {}
 
   async getProducts(): Promise<GetListOfProductsResponse> {
-    return await ShopItem.find();
+    return await this.shopItemRepository.find();
   }
 
   async hasProduct(name: string): Promise<boolean> {
@@ -28,11 +30,11 @@ export class ShopService {
   }
 
   async getOneProduct(id: string): Promise<ShopItem> {
-    return await ShopItem.findOneOrFail(id); // fail will return 500
+    return await this.shopItemRepository.findOneOrFail(id); // fail will return 500
   }
 
   async removeProduct(id: string) {
-    return await ShopItem.delete(id);
+    return await this.shopItemRepository.delete(id);
   }
 
   async createDummyProduct(): Promise<ShopItem> {
@@ -41,22 +43,20 @@ export class ShopService {
     newItem.name = 'shose';
     newItem.description = 'Old school';
 
-    await newItem.save();
+    await this.shopItemRepository.save(newItem);
     return newItem;
   }
 
   async addBoughtCounter(id: string) {
     // always use update
-    await ShopItem.update(id, {
+    await this.shopItemRepository.update(id, {
       wasEverBought: true,
     });
 
     //one option is:
-    const item = await ShopItem.findOneOrFail(id);
+    const item = await this.shopItemRepository.findOneOrFail(id);
 
     item.boughtCounter++;
-    // await ShopItem.save(item);
-    // or
-    await item.save(); //the entity writes itself
+    await this.shopItemRepository.save(item);
   }
 }
