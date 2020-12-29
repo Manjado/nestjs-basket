@@ -59,4 +59,36 @@ export class ShopService {
     // or
     await item.save(); //the entity writes itself
   }
+
+  async findProducts(searchTerm: string): Promise<GetListOfProductsResponse> {
+    // findConditions
+    // return await ShopItem.find({
+    //   description: searchTerm,
+    //   price: 50.0,
+    // });
+
+    //FindManyOptions
+    // return await ShopItem.find({
+    //   where: {
+    //     description: searchTerm,
+    //     price: 50.0,
+    //   },
+    // });
+
+    //FindManyOptions + select
+    // return await ShopItem.find({
+    //   select: ['id', 'price'],
+    //   where: {
+    //     description: searchTerm,
+    //     price: 50.0,
+    //   },
+    // });
+
+    //Order
+    return await ShopItem.find({
+      order: {
+        price: 'DESC',
+      },
+    });
+  }
 }
