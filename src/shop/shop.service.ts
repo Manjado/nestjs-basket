@@ -4,6 +4,7 @@ import { BasketService } from 'src/basket/basket.service';
 import {
   CreateProductResponse,
   GetListOfProductsResponse,
+  GetPaginatedListOfProductsResponse,
 } from 'src/interfaces/shop';
 import { Repository } from 'typeorm';
 import { ShopItem } from './shop-item.entity';
@@ -15,16 +16,36 @@ export class ShopService {
     private basketService: BasketService, // @InjectRepository(ShopItem) // private shopItemRepository: Repository<ShopItem>,  active record dont need to use Repository
   ) {}
 
-  async getProducts(): Promise<GetListOfProductsResponse> {
-    return await ShopItem.find();
+  async getProducts(
+    currentPage: number = 1,
+  ): Promise<GetPaginatedListOfProductsResponse> {
+    // const count = await ShopItem.count();
+    // console.log({ count });
+    // return await ShopItem.find({ skip: 3, take: 3 });
+
+    // const [items, count] = await ShopItem.findAndCount({
+    //   take: 3,
+    // });
+    // console.log({ count });
+    // return items;
+
+    const maxPerPage = 3;
+
+    const [items, count] = await ShopItem.findAndCount({
+      skip: maxPerPage * (currentPage - 1),
+      take: maxPerPage,
+    });
+    const pagesCount = Math.ceil(count / maxPerPage);
+    return { items, pagesCount };
   }
 
   async hasProduct(name: string): Promise<boolean> {
-    return (await this.getProducts()).some((item) => item.name === name);
+    return (await this.getProducts()).items.some((item) => item.name === name);
   }
 
   async getPriceOfProduct(name: string): Promise<number> {
-    return (await this.getProducts()).find((item) => item.name === name).price;
+    return (await this.getProducts()).items.find((item) => item.name === name)
+      .price;
   }
 
   async getOneProduct(id: string): Promise<ShopItem> {
