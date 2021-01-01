@@ -6,7 +6,7 @@ import {
   GetListOfProductsResponse,
   GetPaginatedListOfProductsResponse,
 } from 'src/interfaces/shop';
-import { Repository } from 'typeorm';
+import { Between, In, IsNull, LessThan, Like, Not, Repository } from 'typeorm';
 import { ShopItem } from './shop-item.entity';
 
 @Injectable()
@@ -87,7 +87,6 @@ export class ShopService {
     //   description: searchTerm,
     //   price: 50.0,
     // });
-
     //FindManyOptions
     // return await ShopItem.find({
     //   where: {
@@ -95,7 +94,6 @@ export class ShopService {
     //     price: 50.0,
     //   },
     // });
-
     //FindManyOptions + select
     // return await ShopItem.find({
     //   select: ['id', 'price'],
@@ -104,12 +102,56 @@ export class ShopService {
     //     price: 50.0,
     //   },
     // });
-
     //Order
+    // return await ShopItem.find({
+    //   order: {
+    //     price: 'DESC',
+    //   },
+    // });
+    //AND OR
+    // return await ShopItem.find({
+    //   where: [{ description: 'Old school' }, { price: 9.99 }],
+    // });
+    //Less_then
+    // return await ShopItem.find({
+    //   where: {
+    //     price: LessThan(10),
+    //   },
+    // });
+    //BETWEEN
+    // return await ShopItem.find({
+    //   where: {
+    //     price: Between(10, 15),
+    //   },
+    // });
+    //LIKE
+    // return await ShopItem.find({
+    //   where: {
+    //     description: Like(`%${searchTerm}%`),
+    //   },
+    // });
+    //IN
+    // return await ShopItem.find({
+    //   where: {
+    //     id: In([1, 2]),
+    //   },
+    // });
+
+    //IsNull
+    // return await ShopItem.find({
+    //   where: {
+    //     description: IsNull(),
+    //   },
+    // });
+
+    //Not
     return await ShopItem.find({
-      order: {
-        price: 'DESC',
+      where: {
+        description: Not(IsNull()),
       },
     });
+    //Raw
+    // Raw(function_or_string)
+    //don't use because of sql injection
   }
 }
