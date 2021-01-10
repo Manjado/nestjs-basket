@@ -73,6 +73,9 @@ export class ShopService {
 
     newItem.details = details;
 
+    // delete relation
+    //newItem.details = null
+
     await newItem.save();
 
     return newItem;
