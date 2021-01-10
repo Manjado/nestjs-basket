@@ -52,8 +52,8 @@ export class ShopItem extends BaseEntity {
   })
   wasEverBought: boolean;
 
-  @OneToOne((type) => ShopItemDetails, { eager: true })
-  //@OneToOne((type) => ShopItemDetails)
+  //@OneToOne((type) => ShopItemDetails, { eager: true })
+  @OneToOne((type) => ShopItemDetails)
   @JoinColumn()
   details: ShopItemDetails;
 
