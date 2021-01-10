@@ -202,6 +202,8 @@ export class ShopService {
         searchTerm: `%${searchTerm}%`,
       })
       .orderBy('shopItem.id', 'ASC')
+      .skip(2)
+      .take(3)
       .getMany();
 
     //----------
