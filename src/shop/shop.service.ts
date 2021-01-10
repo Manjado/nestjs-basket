@@ -7,6 +7,7 @@ import {
   GetPaginatedListOfProductsResponse,
 } from 'src/interfaces/shop';
 import { Between, In, IsNull, LessThan, Like, Not, Repository } from 'typeorm';
+import { ShopItemDetails } from './shop-item-details.entity';
 import { ShopItem } from './shop-item.entity';
 
 @Injectable()
@@ -59,10 +60,21 @@ export class ShopService {
   async createDummyProduct(): Promise<ShopItem> {
     const newItem = new ShopItem();
     newItem.price = 50;
-    newItem.name = 'shose';
-    newItem.description = 'Old school';
+    newItem.name = 'Backpack';
+    newItem.description = 'New collection 2021';
 
     await newItem.save();
+
+    const details = new ShopItemDetails();
+    details.color = 'orange';
+    details.width = 20;
+
+    await details.save();
+
+    newItem.details = details;
+
+    await newItem.save();
+
     return newItem;
   }
 
