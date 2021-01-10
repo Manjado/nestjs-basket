@@ -33,6 +33,7 @@ export class ShopService {
     const maxPerPage = 3;
 
     const [items, count] = await ShopItem.findAndCount({
+      relations: ['details', 'sets'],
       skip: maxPerPage * (currentPage - 1),
       take: maxPerPage,
     });
@@ -60,14 +61,14 @@ export class ShopService {
   async createDummyProduct(): Promise<ShopItem> {
     const newItem = new ShopItem();
     newItem.price = 50;
-    newItem.name = 'Backpack';
+    newItem.name = 'Backpack Alfa';
     newItem.description = 'New collection 2021';
 
     await newItem.save();
 
     const details = new ShopItemDetails();
-    details.color = 'orange';
-    details.width = 20;
+    details.color = 'black';
+    details.width = 50;
 
     await details.save();
 
