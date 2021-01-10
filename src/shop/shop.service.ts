@@ -33,7 +33,7 @@ export class ShopService {
     const maxPerPage = 3;
 
     const [items, count] = await ShopItem.findAndCount({
-      relations: ['details', 'sets'],
+      //relations: ['details', 'sets'],
       skip: maxPerPage * (currentPage - 1),
       take: maxPerPage,
     });
