@@ -15,5 +15,3 @@ export interface GetPaginatedListOfProductsResponse {
   items: ShopItem[];
   pagesCount: number;
 }
-
-//export
