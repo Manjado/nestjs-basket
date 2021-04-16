@@ -19,6 +19,7 @@ import {
   GetPaginatedListOfProductsResponse,
 } from 'src/interfaces/shop';
 import { ShopService } from './shop.service';
+import { CheckAgePipe } from 'src/pipe/check-age.pipe';
 
 // http://www.lvh.me:3000/shop
 // @Controller({
@@ -92,12 +93,35 @@ export class ShopController {
   //   return '';
   // }
 
-  @Get('/test/:index?')
+  // @Get('/test/:index?')
+  // test(
+  //   @Param('index', new DefaultValuePipe(0), ParseIntPipe)
+  //   index?: number,
+  // ) {
+  //   console.log(typeof index);
+  //   return index;
+  // }
+
+  // @Get('/test/:age')
+  // test(
+  //   @Param('age', CheckAgePipe)
+  //   age: number,
+  // ) {
+  //   console.log(typeof age, age);
+  //   return age;
+  // }
+
+  @Get('/test/:age')
   test(
-    @Param('index', new DefaultValuePipe(0), ParseIntPipe)
-    index?: number,
+    @Param(
+      'age',
+      new CheckAgePipe({
+        minAge: 21,
+      }),
+    )
+    age: number,
   ) {
-    console.log(typeof index);
-    return index;
+    console.log(typeof age, age);
+    return age;
   }
 }
