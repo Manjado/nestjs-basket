@@ -111,14 +111,23 @@ export class ShopController {
   //   return age;
   // }
 
+  // @Get('/test/:age')
+  // test(
+  //   @Param(
+  //     'age',
+  //     new CheckAgePipe({
+  //       minAge: 21,
+  //     }),
+  //   )
+  //   age: number,
+  // ) {
+  //   console.log(typeof age, age);
+  //   return age;
+  // }
+
   @Get('/test/:age')
   test(
-    @Param(
-      'age',
-      new CheckAgePipe({
-        minAge: 21,
-      }),
-    )
+    @Param('age')
     age: number,
   ) {
     console.log(typeof age, age);
