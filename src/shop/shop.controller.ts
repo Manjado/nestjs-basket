@@ -11,6 +11,8 @@ import {
   ParseIntPipe,
   HttpStatus,
   DefaultValuePipe,
+  ImATeapotException,
+  BadGatewayException,
 } from '@nestjs/common';
 import {
   CreateProductResponse,
@@ -20,6 +22,7 @@ import {
 } from 'src/interfaces/shop';
 import { ShopService } from './shop.service';
 import { CheckAgePipe } from 'src/pipe/check-age.pipe';
+import { UnsubscriptionError } from 'rxjs';
 
 // http://www.lvh.me:3000/shop
 // @Controller({
@@ -125,12 +128,18 @@ export class ShopController {
   //   return age;
   // }
 
-  @Get('/test/:age')
-  test(
-    @Param('age')
-    age: number,
-  ) {
-    console.log(typeof age, age);
-    return age;
+  // @Get('/test/:age')
+  // test(
+  //   @Param('age')
+  //   age: number,
+  // ) {
+  //   console.log(typeof age, age);
+  //   return age;
+  // }
+
+
+  @Get('/test/')
+  test() {
+    throw new BadGatewayException ('Oh noess!')
   }
 }
