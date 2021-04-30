@@ -21,12 +21,14 @@ import { PasswordProtectGuard } from '../guard/password-protect.guard';
 import { UsePassword } from 'src/decorators/use-password-decorator';
 import { MyTimeoutInterceptor } from 'src/interceptors/my-timeout.interceptor';
 import { MyCacheInterceptor } from 'src/interceptors/my-cache.interceptor';
+import { UseCacheTime } from 'src/decorators/use-cache_time.decorator';
 
 @Controller('basket')
 export class BasketController {
   constructor(@Inject(BasketService) private basketService: BasketService) {}
   @Post('/')
   addProductToBasket(@Body() item: AddProductDto): AddProductToBasketResponse {
+    console.log('testss')
     return this.basketService.add(item);
   }
 
@@ -51,6 +53,7 @@ export class BasketController {
    @UseGuards(PasswordProtectGuard)
    @UsePassword('admin1')
    @UseInterceptors(MyTimeoutInterceptor, MyCacheInterceptor)
+   @UseCacheTime(20)
     test() {
     return 'secret_path'
     //return new Promise(resolve => {})

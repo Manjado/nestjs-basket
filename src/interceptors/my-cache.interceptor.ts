@@ -2,6 +2,7 @@ import {CallHandler, ExecutionContext, Injectable, NestInterceptor, RequestTimeo
 import { Reflector } from '@nestjs/core';
 import {Observable, of, throwError, TimeoutError} from 'rxjs';
 import {tap} from "rxjs/operators";
+import { CacheItem } from 'src/cache/cache-item.entity';
 
 
 @Injectable()
@@ -12,24 +13,39 @@ export class MyCacheInterceptor implements NestInterceptor {
         next: CallHandler,
     ): Promise<Observable<any>> {
       const method = context.getHandler();
-      const cachedData = this.reflector.get<any>('cacheData', method);
-      const cachedTime = this.reflector.get<any>('cacheTime', method)
+      const cacheTimeInSec = this.reflector.get<number>('cacheTimeInSec', method);
+      const controllerName = context.getClass().name;
+      const actionName = method.name;
+
+      const cachedData = await CacheItem.findOne({
+        where: {
+          controllerName,
+          actionName
+        }
+      })
 
 
-      if (cachedData && (+cachedTime + 10000 > +new Date())) {
-        console.log('Using live data');
-
-        return of(cachedData)
-      } else {
-         console.log('Generating cached data');
-
-        return next.handle().pipe(
-          tap(data => {
-            Reflect.defineMetadata('cacheData', data, method)
-            Reflect.defineMetadata('cacheTime', new Date(), method)
-
-          })
-        )
+      if (cachedData) {
+        if (+cachedData.createdAt + cacheTimeInSec * 1000 > +new Date()) {
+            console.log('Using cached data');
+            return of(JSON.parse(cachedData.dataJson))
+        } else {
+          console.log('Removing old cache data.', cachedData.id);
+          await cachedData.remove()
+        }
       }
+
+      console.log('Generating cached data');
+
+      return next.handle().pipe(
+        tap(async data => {
+         const newCachedData = new CacheItem();
+         newCachedData.controllerName = controllerName;
+         newCachedData.actionName = actionName;
+         newCachedData.dataJson = JSON.stringify(data)
+
+        await newCachedData.save()
+        })
+      )
     }
 }
