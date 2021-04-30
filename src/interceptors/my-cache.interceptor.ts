@@ -1,6 +1,6 @@
 import {CallHandler, ExecutionContext, Injectable, NestInterceptor, RequestTimeoutException} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import {Observable, throwError, TimeoutError} from 'rxjs';
+import {Observable, of, throwError, TimeoutError} from 'rxjs';
 import {tap} from "rxjs/operators";
 
 
@@ -12,14 +12,24 @@ export class MyCacheInterceptor implements NestInterceptor {
         next: CallHandler,
     ): Promise<Observable<any>> {
       const method = context.getHandler();
+      const cachedData = this.reflector.get<any>('cacheData', method);
+      const cachedTime = this.reflector.get<any>('cacheTime', method)
 
-      return next.handle().pipe(
-        tap(data => {
-          const cachedData = this.reflector.get<any>('cacheData', method)
-          console.log('data from cache: ', cachedData);
 
-          Reflect.defineMetadata('cacheData', data, method)
-        })
-      )
+      if (cachedData && (+cachedTime + 10000 > +new Date())) {
+        console.log('Using live data');
+
+        return of(cachedData)
+      } else {
+         console.log('Generating cached data');
+
+        return next.handle().pipe(
+          tap(data => {
+            Reflect.defineMetadata('cacheData', data, method)
+            Reflect.defineMetadata('cacheTime', new Date(), method)
+
+          })
+        )
+      }
     }
 }
