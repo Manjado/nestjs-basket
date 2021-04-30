@@ -11,10 +11,8 @@ export class PasswordProtectGuard implements CanActivate {
         context: ExecutionContext,
     ): boolean | Promise<boolean> {
         const request = context.switchToHttp().getRequest();
-        //const goodPass = this.reflector.get<string>('passwordProtectGoodPassword', context.getHandler());
+        const goodPass = this.reflector.get<string>('passwordProtectGoodPassword', context.getHandler());
 
-        //return request.headers['x-password'] === goodPass;
-        return request.headers['x-password'] === '1234'
-
+        return request.headers['x-password'] === goodPass;
     }
 }

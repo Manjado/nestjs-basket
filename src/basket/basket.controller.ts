@@ -17,6 +17,7 @@ import {
   RemoveProductFromBasketResonse,
 } from 'src/interfaces/basket';
 import { PasswordProtectGuard } from '../guard/password-protect.guard';
+import { UsePassword } from 'src/decorators/use-password-decorator';
 
 @Controller('basket')
 export class BasketController {
@@ -45,6 +46,7 @@ export class BasketController {
 
    @Get('/admin')
    @UseGuards(PasswordProtectGuard)
+   @UsePassword('admin1')
     test() {
     return 'secret_path'
   }
