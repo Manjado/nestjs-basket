@@ -20,6 +20,7 @@ import {
 import { PasswordProtectGuard } from '../guard/password-protect.guard';
 import { UsePassword } from 'src/decorators/use-password-decorator';
 import { MyTimeoutInterceptor } from 'src/interceptors/my-timeout.interceptor';
+import { MyCacheInterceptor } from 'src/interceptors/my-cache.interceptor';
 
 @Controller('basket')
 export class BasketController {
@@ -49,7 +50,7 @@ export class BasketController {
    @Get('/admin')
    @UseGuards(PasswordProtectGuard)
    @UsePassword('admin1')
-   @UseInterceptors(MyTimeoutInterceptor)
+   @UseInterceptors(MyTimeoutInterceptor, MyCacheInterceptor)
     test() {
     return 'secret_path'
     //return new Promise(resolve => {})
