@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class CacheItem extends BaseEntity {
@@ -6,9 +6,11 @@ export class CacheItem extends BaseEntity {
   id: string;
 
   @Column({length: 100})
+  @Index()
   controllerName: string;
 
   @Column({length: 100})
+  @Index()
   actionName: string;
 
   @Column({type: 'longtext'})
