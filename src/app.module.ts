@@ -6,10 +6,12 @@ import { BasketModule } from './basket/basket.module';
 import { ShopModule } from './shop/shop.module';
 import { CacheModule } from './cache/cache.module';
 import { DiscountCodeModule } from './discount-code/discount-code.module';
+import { CronService } from './cron/cron.service';
+import { CronModule } from './cron/cron.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), BasketModule, ShopModule, CacheModule, DiscountCodeModule],
+  imports: [TypeOrmModule.forRoot(), BasketModule, ShopModule, CacheModule, DiscountCodeModule, CronModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CronService],
 })
 export class AppModule {}
