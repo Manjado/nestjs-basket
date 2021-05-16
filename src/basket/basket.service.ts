@@ -5,6 +5,8 @@ import {
   ListProductsInBasketResponse,
   RemoveProductFromBasketResonse,
 } from 'src/interfaces/basket';
+import { MailService } from 'src/mail/mail.service';
+import { confirmationEmailTamplate } from '../templates/email/confirmation';
 import { ShopService } from '../shop/shop.service';
 import { AddProductDto } from './dto/add-product.dto';
 
@@ -14,6 +16,7 @@ export class BasketService {
 
   constructor(
     @Inject(forwardRef(() => ShopService)) private shopService: ShopService,
+    @Inject(MailService) private mailService: MailService,
   ) {}
 
   add(item: AddProductDto): AddProductToBasketResponse {
@@ -63,6 +66,12 @@ export class BasketService {
       );
       return { isSuccess: false, alternativeBasket };
     }
+
+    await this.mailService.sendMail(
+      'test@test.com',
+      'Pobrano liste',
+      confirmationEmailTamplate(),
+    );
     return (
       await Promise.all(
         this.items.map(
