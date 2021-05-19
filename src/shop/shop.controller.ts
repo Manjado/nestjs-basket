@@ -13,16 +13,25 @@ import {
   DefaultValuePipe,
   ImATeapotException,
   BadGatewayException,
+  Body,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import {
   CreateProductResponse,
   GetListOfProductsResponse,
   GetOneProductResponse,
   GetPaginatedListOfProductsResponse,
+  ShopItemInterface,
 } from 'src/interfaces/shop';
+import { MulterDiskUploadedFiles } from '../interfaces/files';
 import { ShopService } from './shop.service';
 import { CheckAgePipe } from 'src/pipe/check-age.pipe';
 import { UnsubscriptionError } from 'rxjs';
+import { AddProductDto } from './dto/add-product.dto';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { multerStorage, storageDir } from '../utils/storage';
+import * as path from 'path';
 
 // http://www.lvh.me:3000/shop
 // @Controller({
@@ -137,9 +146,28 @@ export class ShopController {
   //   return age;
   // }
 
+  // @Get('/test/')
+  // test() {
+  //   throw new BadGatewayException('Oh noess!');
+  // }
 
-  @Get('/test/')
-  test() {
-    throw new BadGatewayException ('Oh noess!')
+  @Post('/')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        {
+          name: 'photo',
+          maxCount: 10,
+        },
+      ],
+      { storage: multerStorage(path.join(storageDir(), 'product-photos')) },
+    ),
+  )
+  addProduct(
+    @Body() req: AddProductDto,
+    @UploadedFiles() files: MulterDiskUploadedFiles,
+  ): Promise<ShopItemInterface> {
+    console.log('psosos');
+    return this.shopService.addProduct(req, files);
   }
 }

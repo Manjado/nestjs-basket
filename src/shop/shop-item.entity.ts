@@ -38,6 +38,12 @@ export class ShopItem extends BaseEntity {
   price: number;
 
   @Column({
+    default: null,
+    nullable: true,
+  })
+  photoFn: string;
+
+  @Column({
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;

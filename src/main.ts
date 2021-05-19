@@ -11,14 +11,17 @@ async function bootstrap() {
   //app.useGlobalFilters(new ImATeapotExceptionFilter())
   //app.useGlobalFilters(new GlobalExceptionFilter())
 
-  (app as NestExpressApplication).use(helmet());
-  app.enableShutdownHooks();
+  // (app as NestExpressApplication).use(helmet());
+  // app.enableShutdownHooks();
   app.useGlobalPipes(
     new ValidationPipe({
       disableErrorMessages: true,
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   );
   await app.listen(3000);

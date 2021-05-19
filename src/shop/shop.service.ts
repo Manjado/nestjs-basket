@@ -1,10 +1,13 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BasketService } from 'src/basket/basket.service';
+import { AddProductDto } from './dto/add-product.dto';
+import { MulterDiskUploadedFiles } from '../interfaces/files';
 import {
   CreateProductResponse,
   GetListOfProductsResponse,
   GetPaginatedListOfProductsResponse,
+  ShopItemInterface,
 } from 'src/interfaces/shop';
 import {
   Between,
@@ -210,5 +213,30 @@ export class ShopService {
     //Raw
     // Raw(function_or_string)
     //don't use because of sql injection
+  }
+
+  async addProduct(
+    req: AddProductDto,
+    files: MulterDiskUploadedFiles,
+  ): Promise<ShopItemInterface> {
+    const photo = files?.photo?.[0] ?? null;
+
+    const shopItem = new ShopItem();
+    shopItem.name = req.name;
+    shopItem.description = req.description;
+    shopItem.price = req.price;
+
+    if (photo) {
+      shopItem.photoFn = photo.filename;
+    }
+
+    await shopItem.save();
+
+    return {
+      id: shopItem.id,
+      name: shopItem.name,
+      description: shopItem.description,
+      price: shopItem.price,
+    };
   }
 }
