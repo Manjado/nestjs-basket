@@ -159,6 +159,10 @@ export class ShopController {
           name: 'photo',
           maxCount: 10,
         },
+        {
+          name: 'movie',
+          maxCount: 1,
+        },
       ],
       { storage: multerStorage(path.join(storageDir(), 'product-photos')) },
     ),

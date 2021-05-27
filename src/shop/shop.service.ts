@@ -21,6 +21,9 @@ import {
 } from 'typeorm';
 import { ShopItemDetails } from './shop-item-details.entity';
 import { ShopItem } from './shop-item.entity';
+import * as fs from 'fs';
+import * as path from 'path';
+import { storageDir } from 'src/utils/storage';
 
 @Injectable()
 export class ShopService {
@@ -220,23 +223,35 @@ export class ShopService {
     files: MulterDiskUploadedFiles,
   ): Promise<ShopItemInterface> {
     const photo = files?.photo?.[0] ?? null;
+    const movie = files?.movie?.[0] ?? null;
 
-    const shopItem = new ShopItem();
-    shopItem.name = req.name;
-    shopItem.description = req.description;
-    shopItem.price = req.price;
+    try {
+      const shopItem = new ShopItem();
+      shopItem.name = req.name;
+      shopItem.description = req.description;
+      shopItem.price = req.price;
 
-    if (photo) {
-      shopItem.photoFn = photo.filename;
+      if (photo) {
+        shopItem.photoFn = photo.filename;
+      }
+
+      await shopItem.save();
+
+      return {
+        id: shopItem.id,
+        name: shopItem.name,
+        description: shopItem.description,
+        price: shopItem.price,
+      };
+    } catch (e) {
+      try {
+        if (photo) {
+          fs.unlinkSync(
+            path.join(storageDir(), 'product-photos', photo.filename),
+          );
+        }
+      } catch (e2) {}
+      throw e;
     }
-
-    await shopItem.save();
-
-    return {
-      id: shopItem.id,
-      name: shopItem.name,
-      description: shopItem.description,
-      price: shopItem.price,
-    };
   }
 }
